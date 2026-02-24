@@ -1,0 +1,31 @@
+# File: Dockerfile.keepass
+# Purpose: Container for KeePass (Mono runtime + minimal deps)
+# Base: Ubuntu LTS (no proprietary dependencies)
+
+FROM ubuntu:24.04
+
+# Prevent interactive apt dialogs
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y \
+    mono-complete \
+    iptables \
+    iproute2 \
+    ssh-client \
+    gosu \
+    ca-certificates \
+    tcpdump \
+    socat \
+    netcat-openbsd \
+    && apt-get clean
+
+COPY restrict-nft.sh /usr/local/bin/restrict-nft.sh
+COPY nftables.conf /usr/local/bin/nftables.conf
+COPY entrypoint.sh  /usr/local/bin/entrypoint.sh
+COPY run_keepass.sh /usr/local/bin/run_keepass.sh
+
+RUN chmod +x /usr/local/bin/restrict-nft.sh \
+    && chmod +x /usr/local/bin/entrypoint.sh \
+    && chmod +x /usr/local/bin/run_keepass.sh
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

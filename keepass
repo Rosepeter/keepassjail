@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+sudo DISPLAY=$DISPLAY XAUTH=$XAUTHORITY /usr/local/bin/start-keepass.sh
